@@ -17,7 +17,7 @@ ga = GA(popsize, n, m, o_n, t_n, k_m, k_select=3, selection_type="tour")
 # ga = GA(popsize, n, m, o_n, t_n, k_m, k_select=3, selection_type="roulette")
 # ga = GA(popsize, n, m, o_n, t_n, k_m, k_select=3, selection_type="range")
 step = None
-for i in range(int(1e5)):
+for i in range(int(1e3)):
     step = ga.step()
 # if not i % 100:
     #     print(*step)

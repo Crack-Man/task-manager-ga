@@ -75,7 +75,7 @@ class GA:
 
         # Crossover
         for _ in range(self.popsize - self.k_select):
-            i, j = np.random.randint(0, self.popsize - 1, 2)
+            i, j = np.random.choice(np.arange(0, self.popsize), 2)
             p1.append(self.two_point_crossover(i, j))
         self.p = np.array(p1)
 
