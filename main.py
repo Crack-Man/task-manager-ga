@@ -15,17 +15,19 @@ with open("input.txt", "r") as f:
 
 popsize = 50
 k_select = 30
-max_len_individual = 1000
+# max_len_individual = 1000
 # selection_type = "tour"
 # selection_type = "roulette"
-# selection_type = "range"
+selection_type = "range"
 # selection_type = "sus"
 # selection_type = "scaling"
-# ga = GA(popsize, n, m, o_n, t_n, k_m, k_select=k_select, selection_type=selection_type)
-ga = GA2(popsize, n, m, o_n, t_n, k_m, max_len_individual, size_selection=k_select)
+ga = GA(popsize, n, m, o_n, t_n, k_m, k_select=k_select, selection_type=selection_type)
+# ga = GA2(popsize, n, m, o_n, t_n, k_m, max_len_individual, size_selection=k_select)
 step = None
 for i in range(int(1e3)):
     step = ga.step()
 # if not i % 100:
 #     print(*step)
-print(*step)
+print(step[0])
+with open("output.txt", "w") as f:
+    print(*step[1], file=f)

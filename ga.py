@@ -3,7 +3,7 @@ import random as rnd
 
 class GA:
     def random_spec(self):
-        return np.random.randint(1, self.m, self.n)
+        return np.random.randint(1, self.m + 1, self.n)
 
     def __init__(self, popsize, n, m, o_n, t_n, k_m, k_select=1, selection_type="tour", selection_step=3):
         self.popsize = popsize
