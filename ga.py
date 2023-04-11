@@ -5,7 +5,7 @@ class GA:
     def random_spec(self):
         return np.random.randint(1, self.m, self.n)
 
-    def __init__(self, popsize, n, m, o_n, t_n, k_m, k_select=1, selection_type="tour"):
+    def __init__(self, popsize, n, m, o_n, t_n, k_m, k_select=1, selection_type="tour", selection_step=3):
         self.popsize = popsize
         self.n = n
         self.m = m
@@ -16,6 +16,7 @@ class GA:
         self.best_p = None
         self.best_rate = None
         self.selection_type = selection_type
+        self.selection_step = selection_step
         self.p = np.array([self.random_spec() for _ in range(self.popsize)])
 
     def fit(self, s):
@@ -51,6 +52,23 @@ class GA:
         choice = rnd.choices(population=idxs, weights=p, k=self.k_select)
         return p1[choice]
 
+    def selection_sus(self, fit_rates, p1):
+        weights = fit_rates / np.sum(fit_rates)
+        idxs = np.arange(0, self.popsize)
+        choice = np.random.choice(idxs, 1, p=weights)
+        for i in range(self.k_select - 1):
+            choice = np.append(choice, (choice[0] + (i + 1) * self.selection_step) % self.popsize)
+        return p1[choice]
+
+    def selection_scaling(self, fit_rates, p1):
+        rng = [30, 100]
+        a = (rng[0] - rng[1]) / (fit_rates[-1] - fit_rates[0])
+        b = rng[0] - a * fit_rates[-1]
+        weights = a * fit_rates + b
+        idxs = np.arange(0, self.popsize)
+        choice = rnd.choices(population=idxs, weights=weights, k=self.k_select)
+        return p1[choice]
+
     def sort(self, a, b):
         idx = np.argsort(a)
         return a[idx], b[idx]
@@ -70,8 +88,12 @@ class GA:
             p1 = list(p1[:self.k_select])
         elif self.selection_type == "roulette":
             p1 = list(self.selection_roulette(fit_rates_sort, p1))
+        elif self.selection_type == "sus":
+            p1 = list(self.selection_sus(fit_rates_sort, p1))
         elif self.selection_type == "range":
             p1 = list(self.selection_range(p1))
+        elif self.selection_type == "scaling":
+            p1 = list(self.selection_scaling(fit_rates_sort, p1))
 
         # Crossover
         for _ in range(self.popsize - self.k_select):
